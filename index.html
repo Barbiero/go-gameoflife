@@ -36,10 +36,7 @@ license that can be found in the LICENSE file.
       async function initGo() {
         go = null;
         go = new Go();
-        await WebAssembly.instantiateStreaming(
-          fetch("main.wasm"),
-          go.importObject
-        )
+        await WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
           .then((result) => {
             mod = result.module;
             inst = result.instance;
@@ -53,10 +50,15 @@ license that can be found in the LICENSE file.
 
       let width = 200;
       let height = 200;
-      const RATIO = 4
+      const RATIO = 4;
       globalThis.golBuffer = new Uint8Array(width * height);
+
       function drawGameOfLife() {
-        let ctx = document.getElementById("gameoflife").getContext("2d");
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById("gameoflife");
+
+        const ctx = canvas.getContext("2d", { alpha: false });
+
         for (let i = 0; i < width; i++) {
           for (let j = 0; j < height; j++) {
             const alive = golBuffer[i * width + j] === 1;
@@ -97,9 +99,9 @@ license that can be found in the LICENSE file.
       }
     </script>
 
-    <button onClick="run();" id="runButton" disabled>Run</button>
+    <button type="button" onClick="run();" id="runButton" disabled>Run</button>
 
-    <button onclick="stopGo();" id="stopButton" disabled>Stop Go</button>
+    <button type="button" onclick="stopGo();" id="stopButton" disabled>Stop Go</button>
 
     <canvas id="gameoflife" width="800" height="800"></canvas>
   </body>

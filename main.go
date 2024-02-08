@@ -44,17 +44,11 @@ func main() {
 			js.CopyBytesToJS(globalThis.Get("golBuffer"), board)
 			globalThis.Call("drawGameOfLife")
 
-			// await animation frame
-			var promise = globalThis.Get("Promise").New(js.FuncOf(func(_ js.Value, args []js.Value) any {
-				res := args[0]
-
-				globalThis.Call("requestAnimationFrame", res)
-				return js.Undefined()
-			}))
-			promise.Call("then", js.FuncOf(func(this js.Value, args []js.Value) any {
+			globalThis.Call("requestAnimationFrame", js.FuncOf(func(this js.Value, args []js.Value) any {
 				promiseCh <- args
 				return js.Undefined()
 			}))
+			// wait for animation frame before fetching the next board
 			<-promiseCh
 		}
 	}
